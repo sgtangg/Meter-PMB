@@ -1,0 +1,1002 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Self-Evaluation PMB • Landing</title>
+  <meta name="description" content="Ukur kematangan strategi PMB kampus Anda. Hanya ±5 menit, dapatkan rekomendasi otomatis yang selaras akreditasi." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root { --primary:#2563eb; }
+    html { font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
+    
+    @media (prefers-reduced-motion: reduce) {
+      * { animation: none !important; transition: none !important; }
+    }
+
+
+    /* Popup animations */
+    .popup-overlay {
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+
+    .popup-overlay.hidden {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+
+    .popup-content {
+      transform: scale(0.95) translateY(20px);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+
+    .popup-overlay:not(.hidden) .popup-content {
+      transform: scale(1) translateY(0);
+    }
+
+
+    /* CAPTCHA styles */
+    .captcha-box {
+      background: linear-gradient(135deg, #f0f9ff 0%, #e0e7ff 100%);
+      border: 2px dashed #6366f1;
+      font-family: 'Courier New', monospace;
+      letter-spacing: 3px;
+      font-weight: bold;
+      text-align: center;
+      user-select: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+
+    .captcha-box:hover {
+      background: linear-gradient(135deg, #e0e7ff 0%, #f0f9ff 100%);
+      border-color: #4f46e5;
+    }
+
+
+    /* Input verification styling */
+    .verification-input {
+      letter-spacing: 8px;
+      text-align: center;
+      font-family: 'Courier New', monospace;
+      font-weight: bold;
+    }
+
+
+    /* Loading animation */
+    .loading-dots::after {
+      content: '';
+      animation: loading-dots 1.5s infinite;
+    }
+
+
+    @keyframes loading-dots {
+      0%, 20% { content: '.'; }
+      40% { content: '..'; }
+      60%, 100% { content: '...'; }
+    }
+
+
+    /* Success animation */
+    @keyframes checkmark {
+      0% { transform: scale(0); }
+      50% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+
+
+    .checkmark-animate {
+      animation: checkmark 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+
+    /* Shake animation for errors */
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
+
+
+    .shake {
+      animation: shake 0.5s ease-in-out;
+    }
+
+
+    /* Countdown circular progress */
+    .countdown-circle {
+      transform: rotate(-90deg);
+      transition: stroke-dashoffset 1s linear;
+    }
+
+
+    /* Countdown animation */
+    @keyframes countdown-pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+
+    .countdown-urgent {
+      animation: countdown-pulse 1s infinite;
+      color: #dc2626;
+    }
+
+
+    /* Progress bar animation */
+    @keyframes progress-fill {
+      0% { width: 0%; }
+      100% { width: 100%; }
+    }
+
+
+    .progress-bar {
+      animation: progress-fill 0.5s ease-out;
+    }
+
+
+    /* Expired state */
+    .expired-state {
+      background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+      border-color: #dc2626;
+    }
+
+
+    /* Success state */
+    .success-state {
+      background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+      border-color: #16a34a;
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+  <!-- Skip link -->
+  <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 bg-white text-slate-900 px-3 py-2 rounded-md shadow">Lewati ke konten</a>
+
+
+  <!-- NAV -->
+  <header class="bg-white/80 backdrop-blur border-b border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="font-semibold">PMB Self-Eval</div>
+      <button id="ctaToggle" class="rounded-xl bg-[color:var(--primary)] text-white px-4 py-2 hover:bg-blue-600 focus:outline-none focus:ring-4 focus:ring-blue-300">
+        Mulai Evaluasi Sekarang (±5 menit)
+      </button>
+    </div>
+  </header>
+
+
+  <main id="main" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- HERO -->
+    <section class="py-12 sm:py-16">
+      <div class="grid lg:grid-cols-2 gap-10 items-center">
+        <div>
+          <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight">
+            Seberapa Matang Strategi Marketing PMB di Kampus Anda?
+          </h1>
+          <p class="mt-4 text-lg text-slate-700">
+            Ukur kematangan strategi penerimaan mahasiswa baru Anda dengan instrumen komprehensif berbasis standar mutu & praktik terbaik. Hasil evaluasi memberi rekomendasi langsung agar promosi dan penerimaan lebih efektif.
+          </p>
+          <div class="mt-6">
+            <button id="ctaToggle2" class="rounded-xl bg-[color:var(--primary)] text-white px-6 py-3 hover:bg-blue-600 focus:outline-none focus:ring-4 focus:ring-blue-300">
+              Mulai Evaluasi Sekarang
+            </button>
+          </div>
+        </div>
+        <div class="relative">
+          <div class="aspect-[4/3] w-full rounded-2xl bg-gradient-to-br from-blue-100 to-blue-200 border border-blue-300/40 grid place-content-center">
+            <svg width="120" height="120" viewBox="0 0 24 24" class="text-blue-500" fill="currentColor" aria-hidden="true">
+              <path d="M11 2a1 1 0 0 1 2 0v2.07a8.001 8.001 0 1 1-2 0V2Zm1 5a6 6 0 1 0 0 12 6 6 0 0 0 0-12Zm-1 2h2v4h-2V9Zm0 5h2v2h-2v-2Z"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- PROLOG -->
+    <section class="py-6">
+      <div class="prose max-w-none">
+        <p><em>Di era persaingan ketat antar perguruan tinggi, strategi PMB tidak cukup sekadar aktif promosi. Kampus perlu memastikan setiap proses – mulai dari perencanaan, kebijakan, teknologi, hingga keterlibatan stakeholder – berjalan efektif dan berdampak nyata.</em></p>
+        <p>Melalui <strong>Self-Evaluation PMB</strong>, Anda dapat mengukur posisi kematangan strategi PMB kampus. Hasil evaluasi menampilkan kekuatan, area yang perlu ditingkatkan, serta rekomendasi praktis yang selaras standar akreditasi.</p>
+        <p><strong>Mari mulai perjalanan menuju strategi PMB yang lebih kuat.</strong></p>
+      </div>
+    </section>
+
+
+    <!-- BENEFITS -->
+    <section class="py-8">
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
+          <h3 class="font-semibold">Gambaran Objektif</h3>
+          <p class="text-sm text-slate-600 mt-1">Lihat posisi kematangan PMB Anda secara menyeluruh.</p>
+        </div>
+        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
+          <h3 class="font-semibold">Temukan Area Kritis</h3>
+          <p class="text-sm text-slate-600 mt-1">Prioritaskan perbaikan yang berdampak pada penerimaan.</p>
+        </div>
+        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
+          <h3 class="font-semibold">Rekomendasi Otomatis</h3>
+          <p class="text-sm text-slate-600 mt-1">Saran per level yang siap dieksekusi.</p>
+        </div>
+        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
+          <h3 class="font-semibold">Selaras Akreditasi</h3>
+          <p class="text-sm text-slate-600 mt-1">Terhubung dengan PPEPP & dokumen mutu.</p>
+        </div>
+        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
+          <h3 class="font-semibold">Cepat & Gratis</h3>
+          <p class="text-sm text-slate-600 mt-1">Hanya ±5 menit untuk hasil awal.</p>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- IDENTITY PANEL -->
+    <section class="py-10" aria-label="Langkah 1: Data Kampus">
+      <div id="identityPanel"
+           class="overflow-hidden transition-all duration-300 max-h-0 opacity-0"
+           aria-hidden="true">
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 sm:p-8">
+          <div class="flex items-center gap-3 mb-4">
+            <span class="text-xs font-semibold px-2 py-1 rounded-full bg-blue-100 text-blue-700">Langkah 1 dari 2</span>
+            <h2 class="text-xl font-bold">Isi Data Kampus Anda Sebelum Melanjutkan</h2>
+          </div>
+          <p class="text-sm text-slate-600 mb-6">Data Anda aman dan hanya digunakan untuk laporan hasil evaluasi.</p>
+
+
+          <form id="campusForm" novalidate class="space-y-5">
+            <div class="grid sm:grid-cols-2 gap-4">
+              <div>
+                <label for="pic" class="block text-sm font-medium">Nama Lengkap PIC PMB <span class="text-red-600">*</span></label>
+                <input id="pic" name="pic" type="text" required
+                       class="form-input mt-1 w-full rounded-xl border border-slate-300 px-4 py-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-300"
+                       autocomplete="name" />
+              </div>
+              <div>
+                <label for="email" class="block text-sm font-medium">Email Aktif <span class="text-red-600">*</span></label>
+                <input id="email" name="email" type="email" required
+                       class="form-input mt-1 w-full rounded-xl border border-slate-300 px-4 py-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-300"
+                       autocomplete="email" />
+                <p id="err-email" class="mt-1 text-xs text-red-600 hidden">Email tidak valid.</p>
+              </div>
+            </div>
+
+
+            <div class="grid sm:grid-cols-2 gap-4">
+              <div>
+                <label for="whatsapp" class="block text-sm font-medium">Nomor WhatsApp <span class="text-red-600">*</span></label>
+                <input id="whatsapp" name="whatsapp" type="tel" inputmode="tel" required
+                       placeholder="+62 812-3456-7890"
+                       class="form-input mt-1 w-full rounded-xl border border-slate-300 px-4 py-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-300" />
+              </div>
+              <div>
+                <label for="campus" class="block text-sm font-medium">Nama Kampus <span class="text-red-600">*</span></label>
+                <input id="campus" name="campus" type="text" required
+                       class="form-input mt-1 w-full rounded-xl border border-slate-300 px-4 py-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-300" />
+              </div>
+            </div>
+
+
+            <div class="grid sm:grid-cols-3 gap-4">
+              <div>
+                <label for="website" class="block text-sm font-medium">Website Kampus</label>
+                <input id="website" name="website" type="url"
+                       placeholder="https://contoh.ac.id"
+                       class="form-input mt-1 w-full rounded-xl border border-slate-300 px-4 py-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-300" />
+              </div>
+              <div>
+                <label for="instagram" class="block text-sm font-medium">Instagram Kampus</label>
+                <input id="instagram" name="instagram" type="text" placeholder="@kampus"
+                       class="form-input mt-1 w-full rounded-xl border border-slate-300 px-4 py-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-300" />
+              </div>
+              <div>
+                <label for="medsos" class="block text-sm font-medium">Media Sosial Lain</label>
+                <input id="medsos" name="medsos" type="text" placeholder="TikTok/Facebook/YouTube"
+                       class="form-input mt-1 w-full rounded-xl border border-slate-300 px-4 py-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-300" />
+              </div>
+            </div>
+
+
+            <fieldset class="mt-2">
+              <legend class="text-sm font-semibold mb-2">Skala Kampus</legend>
+              <div class="grid sm:grid-cols-3 gap-4">
+                <div>
+                  <label for="students" class="block text-sm font-medium">Jumlah Mahasiswa Aktif <span class="text-red-600">*</span></label>
+                  <input id="students" name="students" type="number" min="1" required
+                         class="form-input mt-1 w-full rounded-xl border border-slate-300 px-4 py-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-300" />
+                </div>
+                <div>
+                  <label for="faculties" class="block text-sm font-medium">Jumlah Fakultas <span class="text-red-600">*</span></label>
+                  <input id="faculties" name="faculties" type="number" min="1" required
+                         class="form-input mt-1 w-full rounded-xl border border-slate-300 px-4 py-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-300" />
+                </div>
+                <div>
+                  <label for="programs" class="block text-sm font-medium">Jumlah Program Studi <span class="text-red-600">*</span></label>
+                  <input id="programs" name="programs" type="number" min="1" required
+                         class="form-input mt-1 w-full rounded-xl border border-slate-300 px-4 py-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-300" />
+                </div>
+              </div>
+            </fieldset>
+
+
+            <label class="flex items-start gap-3 text-sm">
+              <input id="consent" name="consent" type="checkbox" required class="mt-1 rounded border-slate-300 text-blue-600 focus:ring-blue-500" />
+              <span>Saya menyetujui pengolahan data untuk keperluan evaluasi. <a href="#" class="underline">Kebijakan Privasi</a></span>
+            </label>
+
+
+            <div class="pt-4">
+              <button id="submitBtn" type="submit"
+                      class="relative inline-flex items-center gap-3 rounded-xl bg-emerald-600 text-white px-6 py-3 hover:bg-emerald-700 focus:outline-none focus:ring-4 focus:ring-emerald-300 disabled:opacity-50">
+                <span id="btnLabel">Lanjut ke Evaluasi</span>
+                <span id="btnSpinner" class="hidden" aria-hidden="true">
+                  <svg class="animate-spin w-5 h-5" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0A12 12 0 000 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                </span>
+              </button>
+            </div>
+          </form>
+
+
+          <div id="successMessage" class="hidden mt-6 rounded-xl bg-emerald-50 text-emerald-900 p-4 border border-emerald-200">
+            <div class="flex items-start gap-3">
+              <svg class="w-5 h-5 mt-1 checkmark-animate" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M9 12l2 2 4-4-1.5-1.5L11 11l-1.5-1.5L8 11l1 1z"/>
+                <path fill-rule="evenodd" d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm0-2a8 8 0 110-16 8 8 0 010 16z" clip-rule="evenodd"/>
+              </svg>
+              <div class="flex-1">
+                <p class="font-semibold">Email berhasil diverifikasi!</p>
+                <p class="text-sm">Anda akan diarahkan ke langkah berikutnya dalam beberapa detik.</p>
+              </div>
+              <button id="closeSuccess" class="text-sm underline">Tutup</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- FAQ -->
+    <section class="pb-16">
+      <h2 class="text-xl font-bold mb-4">Pertanyaan Umum</h2>
+      <div class="divide-y divide-slate-200 bg-white rounded-2xl border border-slate-200 shadow-sm">
+        <details class="group p-5">
+          <summary class="cursor-pointer font-medium flex items-center justify-between">
+            Apakah evaluasi ini gratis?
+            <span class="transition-transform group-open:rotate-180">⌄</span>
+          </summary>
+          <p class="mt-3 text-sm text-slate-600">Ya, hasil ringkas dapat diakses gratis.</p>
+        </details>
+        <details class="group p-5">
+          <summary class="cursor-pointer font-medium flex items-center justify-between">
+            Berapa lama durasinya?
+            <span class="transition-transform group-open:rotate-180">⌄</span>
+          </summary>
+          <p class="mt-3 text-sm text-slate-600">Sekitar 5 menit untuk data awal.</p>
+        </details>
+        <details class="group p-5">
+          <summary class="cursor-pointer font-medium flex items-center justify-between">
+            Bagaimana verifikasi email bekerja?
+            <span class="transition-transform group-open:rotate-180">⌄</span>
+          </summary>
+          <p class="mt-3 text-sm text-slate-600">Kami akan mengirimkan kode verifikasi 6 digit ke email Anda untuk memastikan keakuratan data.</p>
+        </details>
+      </div>
+    </section>
+  </main>
+
+
+  <!-- VERIFICATION POPUP -->
+  <div id="verificationPopup" class="popup-overlay hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="popup-content bg-white rounded-2xl shadow-2xl max-w-md w-full p-6">
+      <!-- Header -->
+      <div class="flex items-center justify-between mb-6">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+            <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-slate-900">Verifikasi Email</h3>
+        </div>
+        <button id="closePopup" class="text-slate-400 hover:text-slate-600 transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+
+
+      <!-- Email Sending -->
+      <div id="emailSendingStep" class="text-center">
+        <div class="mb-4">
+          <div class="inline-flex items-center justify-center w-16 h-16 bg-blue-100 rounded-full mb-4">
+            <svg class="animate-spin w-8 h-8 text-blue-600" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0A12 12 0 000 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+          </div>
+        </div>
+        <p class="text-slate-900 font-medium mb-2">Mengirim kode verifikasi</p>
+        <p class="text-sm text-slate-600 mb-4">
+          Kami sedang mengirimkan kode 6 digit ke email: 
+          <strong id="emailDisplay" class="text-blue-600"></strong>
+        </p>
+        <p class="text-xs text-slate-500 loading-dots">Mohon tunggu sebentar</p>
+      </div>
+
+
+      <!-- Verification -->
+      <div id="verificationStep" class="hidden">
+        <div class="text-center mb-6">
+          <div class="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-4">
+            <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+            </svg>
+          </div>
+          <p class="text-slate-900 font-medium mb-2">Kode verifikasi telah dikirim!</p>
+          <p class="text-sm text-slate-600 mb-4">Masukkan kode 6 digit yang telah dikirim ke email Anda.</p>
+        </div>
+
+
+        <!-- Countdown Timer -->
+        <div id="countdownSection" class="mb-6 text-center">
+          <div class="inline-flex items-center gap-3 p-4 bg-slate-50 rounded-xl border">
+            <div class="relative w-12 h-12">
+              <svg class="w-12 h-12 transform -rotate-90" viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="45" fill="transparent" stroke="#e2e8f0" stroke-width="8"/>
+                <circle id="countdownCircle" cx="50" cy="50" r="45" fill="transparent" stroke="#2563eb" stroke-width="8" 
+                        stroke-linecap="round" stroke-dasharray="283" stroke-dashoffset="0" class="transition-all duration-1000"/>
+              </svg>
+              <div class="absolute inset-0 flex items-center justify-center">
+                <span id="countdownDisplay" class="text-sm font-bold text-slate-900">05:00</span>
+              </div>
+            </div>
+            <div class="text-left">
+              <p class="text-sm font-medium text-slate-900">Kode berlaku selama</p>
+              <p id="countdownText" class="text-xs text-slate-600">5 menit dari sekarang</p>
+            </div>
+          </div>
+        </div>
+
+
+        <!-- CAPTCHA -->
+        <div class="mb-6">
+          <label class="block text-sm font-medium text-slate-700 mb-2">Ketik CAPTCHA berikut:</label>
+          <div class="captcha-box rounded-lg p-4 mb-3 text-2xl" id="captchaDisplay" onclick="generateCaptcha()">
+            LOADING...
+          </div>
+          <input type="text" id="captchaInput" 
+                 class="w-full rounded-lg border border-slate-300 px-4 py-3 text-center font-mono font-bold tracking-widest focus:border-blue-500 focus:ring-2 focus:ring-blue-300" 
+                 placeholder="Masukkan CAPTCHA" 
+                 maxlength="5" />
+          <p class="text-xs text-slate-500 mt-1">Klik pada kotak CAPTCHA untuk generate ulang</p>
+        </div>
+
+
+        <!-- Email Code -->
+        <div class="mb-6">
+          <label class="block text-sm font-medium text-slate-700 mb-2">Kode Verifikasi Email:</label>
+          <input type="text" id="verificationCode" 
+                 class="verification-input w-full rounded-lg border border-slate-300 px-4 py-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-300" 
+                 placeholder="000000" 
+                 maxlength="6" 
+                 pattern="[0-9]{6}" />
+          <p class="text-xs text-slate-500 mt-1">Periksa folder spam jika tidak ditemukan</p>
+        </div>
+
+
+        <!-- Verify Button -->
+        <button id="verifyBtn" 
+                class="w-full bg-blue-600 text-white rounded-lg px-4 py-3 font-medium hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 disabled:opacity-50 disabled:cursor-not-allowed">
+          <span id="verifyBtnText">Verifikasi Kode</span>
+          <span id="verifySpinner" class="hidden">
+            <svg class="inline animate-spin w-4 h-4 ml-2" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0A12 12 0 000 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+          </span>
+        </button>
+
+
+        <!-- Resend Section -->
+        <div class="text-center mt-4">
+          <div id="resendAvailable" class="hidden">
+            <p class="text-sm text-slate-600 mb-2">Tidak menerima kode?</p>
+            <button id="resendBtn" class="bg-slate-100 hover:bg-slate-200 text-slate-900 px-4 py-2 rounded-lg font-medium transition-colors">
+              <span id="resendBtnText">Kirim Ulang Kode</span>
+              <span id="resendSpinner" class="hidden">
+                <svg class="inline animate-spin w-4 h-4 ml-2" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0A12 12 0 000 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+              </span>
+            </button>
+          </div>
+          <div id="resendUnavailable">
+            <p class="text-sm text-slate-600">
+              Tidak menerima kode? Tunggu hingga timer selesai untuk mengirim ulang.
+            </p>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- Error Message -->
+      <div id="errorMessage" class="hidden mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+        <div class="flex items-center gap-2">
+          <svg class="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+          <p id="errorText" class="text-sm text-red-800"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <footer class="border-t border-slate-200 py-6 text-center text-sm text-slate-500">
+    © 2025 PMB Self-Eval • <a href="#" class="underline">Kebijakan Privasi</a>
+  </footer>
+
+
+  <script>
+    // Elements
+    const identityPanel = document.getElementById('identityPanel');
+    const ctaToggle = document.getElementById('ctaToggle');
+    const ctaToggle2 = document.getElementById('ctaToggle2');
+    const campusForm = document.getElementById('campusForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const btnLabel = document.getElementById('btnLabel');
+    const btnSpinner = document.getElementById('btnSpinner');
+    const successMessage = document.getElementById('successMessage');
+    const closeSuccess = document.getElementById('closeSuccess');
+    const firstInput = document.getElementById('pic');
+    const emailInput = document.getElementById('email');
+    const errEmail = document.getElementById('err-email');
+
+
+    // Popup Elements
+    const verificationPopup = document.getElementById('verificationPopup');
+    const closePopup = document.getElementById('closePopup');
+    const emailSendingStep = document.getElementById('emailSendingStep');
+    const verificationStep = document.getElementById('verificationStep');
+    const emailDisplay = document.getElementById('emailDisplay');
+    const captchaDisplay = document.getElementById('captchaDisplay');
+    const captchaInput = document.getElementById('captchaInput');
+    const verificationCode = document.getElementById('verificationCode');
+    const verifyBtn = document.getElementById('verifyBtn');
+    const verifyBtnText = document.getElementById('verifyBtnText');
+    const verifySpinner = document.getElementById('verifySpinner');
+    const resendBtn = document.getElementById('resendBtn');
+    const resendBtnText = document.getElementById('resendBtnText');
+    const resendSpinner = document.getElementById('resendSpinner');
+    const resendAvailable = document.getElementById('resendAvailable');
+    const resendUnavailable = document.getElementById('resendUnavailable');
+    const errorMessage = document.getElementById('errorMessage');
+    const errorText = document.getElementById('errorText');
+
+
+    // Countdown Elements
+    const countdownSection = document.getElementById('countdownSection');
+    const countdownDisplay = document.getElementById('countdownDisplay');
+    const countdownText = document.getElementById('countdownText');
+    const countdownCircle = document.getElementById('countdownCircle');
+
+
+    // Variables
+    let currentCaptcha = '';
+    let emailVerificationCode = '';
+    let userEmail = '';
+    let countdownTimer = null;
+    let countdownSeconds = 300; // 5 minutes
+    let isCountdownExpired = false;
+
+
+    // Helpers
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+
+    // Panel controls
+    function openPanel() {
+      identityPanel.classList.remove('opacity-0');
+      identityPanel.style.maxHeight = identityPanel.scrollHeight + 'px';
+      identityPanel.setAttribute('aria-hidden', 'false');
+      if (!reduceMotion) identityPanel.classList.add('opacity-100');
+      setTimeout(() => {
+        identityPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        firstInput?.focus();
+      }, 50);
+    }
+
+
+    function closePanel() {
+      identityPanel.style.maxHeight = '0px';
+      identityPanel.classList.add('opacity-0');
+      identityPanel.setAttribute('aria-hidden', 'true');
+      ctaToggle.focus();
+    }
+
+
+    function togglePanel() {
+      const isClosed = identityPanel.getAttribute('aria-hidden') === 'true';
+      if (isClosed) openPanel(); else closePanel();
+      [ctaToggle, ctaToggle2].forEach(btn => {
+        if (!btn) return;
+        const open = isClosed;
+        btn.setAttribute('aria-expanded', String(open));
+        btn.textContent = open ? 'Sembunyikan Form' : 'Mulai Evaluasi Sekarang';
+      });
+    }
+
+
+    // CAPTCHA functions
+    function generateCaptcha() {
+      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+      currentCaptcha = '';
+      for (let i = 0; i < 5; i++) {
+        currentCaptcha += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      captchaDisplay.textContent = currentCaptcha;
+    }
+
+
+    // Email verification code generator
+    function generateEmailCode() {
+      return Math.floor(100000 + Math.random() * 900000).toString();
+    }
+
+
+    // Countdown functions
+    function formatTime(seconds) {
+      const minutes = Math.floor(seconds / 60);
+      const secs = seconds % 60;
+      return `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    }
+
+
+    function updateCountdownCircle(seconds) {
+      const totalSeconds = 300; // 5 minutes
+      const progress = (totalSeconds - seconds) / totalSeconds;
+      const offset = 283 * progress; // 283 is the circumference of the circle
+      countdownCircle.style.strokeDashoffset = offset;
+    }
+
+
+    function startCountdown() {
+      countdownSeconds = 300; // Reset to 5 minutes
+      isCountdownExpired = false;
+      
+      // Update UI states
+      resendAvailable.classList.add('hidden');
+      resendUnavailable.classList.remove('hidden');
+      countdownSection.classList.remove('expired-state');
+      countdownDisplay.classList.remove('countdown-urgent');
+      
+      countdownTimer = setInterval(() => {
+        countdownSeconds--;
+        countdownDisplay.textContent = formatTime(countdownSeconds);
+        updateCountdownCircle(countdownSeconds);
+        
+        // Update countdown text based on remaining time
+        if (countdownSeconds > 60) {
+          const minutes = Math.floor(countdownSeconds / 60);
+          countdownText.textContent = `${minutes} menit ${countdownSeconds % 60} detik tersisa`;
+        } else if (countdownSeconds > 0) {
+          countdownText.textContent = `${countdownSeconds} detik tersisa`;
+          countdownDisplay.classList.add('countdown-urgent');
+        } else {
+          // Timer expired
+          clearInterval(countdownTimer);
+          isCountdownExpired = true;
+          countdownDisplay.textContent = 'EXPIRED';
+          countdownText.textContent = 'Kode telah kadaluarsa';
+          countdownSection.classList.add('expired-state');
+          
+          // Enable resend button
+          resendAvailable.classList.remove('hidden');
+          resendUnavailable.classList.add('hidden');
+          
+          // Show expired error
+          showError('Kode verifikasi telah kadaluarsa. Silakan kirim ulang kode baru.');
+        }
+      }, 1000);
+    }
+
+
+    function stopCountdown() {
+      if (countdownTimer) {
+        clearInterval(countdownTimer);
+        countdownTimer = null;
+      }
+    }
+
+
+    // Show popup
+    function showVerificationPopup(email) {
+      userEmail = email;
+      emailDisplay.textContent = email;
+      verificationPopup.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+      
+      // Reset popup state
+      emailSendingStep.classList.remove('hidden');
+      verificationStep.classList.add('hidden');
+      errorMessage.classList.add('hidden');
+      
+      // Simulate sending email
+      setTimeout(() => {
+        emailVerificationCode = generateEmailCode();
+        console.log('Generated verification code:', emailVerificationCode);
+        
+        emailSendingStep.classList.add('hidden');
+        verificationStep.classList.remove('hidden');
+        generateCaptcha();
+        startCountdown();
+        captchaInput.focus();
+      }, 3000);
+    }
+
+
+    // Hide popup
+    function hideVerificationPopup() {
+      verificationPopup.classList.add('hidden');
+      document.body.style.overflow = '';
+      stopCountdown();
+    }
+
+
+    // Show error
+    function showError(message) {
+      errorText.textContent = message;
+      errorMessage.classList.remove('hidden');
+      errorMessage.classList.add('shake');
+      setTimeout(() => {
+        errorMessage.classList.remove('shake');
+      }, 500);
+    }
+
+
+    // Loading states
+    function setLoading(isLoading) {
+      submitBtn.disabled = isLoading;
+      submitBtn.setAttribute('aria-busy', String(isLoading));
+      btnSpinner.classList.toggle('hidden', !isLoading);
+      btnLabel.textContent = isLoading ? 'Mengirim Data...' : 'Lanjut ke Evaluasi';
+    }
+
+
+    function setVerifyLoading(isLoading) {
+      verifyBtn.disabled = isLoading;
+      verifySpinner.classList.toggle('hidden', !isLoading);
+      verifyBtnText.textContent = isLoading ? 'Memverifikasi...' : 'Verifikasi Kode';
+    }
+
+
+    function setResendLoading(isLoading) {
+      resendBtn.disabled = isLoading;
+      resendSpinner.classList.toggle('hidden', !isLoading);
+      resendBtnText.textContent = isLoading ? 'Mengirim...' : 'Kirim Ulang Kode';
+    }
+
+
+    // Normalize WhatsApp format
+    function normalizeWa(val) {
+      if (!val) return val;
+      let v = String(val).trim().replace(/[\s-]/g, '');
+      if (v.startsWith('0')) v = '+62' + v.slice(1);
+      if (/^\d+$/.test(v)) v = '+' + v;
+      return v;
+    }
+
+
+    // Validation
+    function validate(formData) {
+      const errors = {};
+      const email = formData.get('email');
+      const wa = formData.get('whatsapp');
+      const consent = formData.get('consent');
+
+
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errors.email = 'Email tidak valid.';
+      if (!wa) errors.whatsapp = 'Nomor WhatsApp wajib diisi.';
+      if (!consent) errors.consent = 'Centang persetujuan privasi.';
+      return errors;
+    }
+
+
+    // Event Listeners
+    ctaToggle?.addEventListener('click', togglePanel);
+    ctaToggle2?.addEventListener('click', togglePanel);
+    closePopup?.addEventListener('click', hideVerificationPopup);
+
+
+    // Form input focus effects
+    const formInputs = document.querySelectorAll('.form-input');
+    formInputs.forEach(input => {
+      input.addEventListener('focus', () => {
+        if (!reduceMotion) input.parentElement.classList.add('transition', 'duration-150', 'ease-out', 'scale-[1.02]');
+      });
+      input.addEventListener('blur', () => {
+        input.parentElement.classList.remove('scale-[1.02]');
+      });
+    });
+
+
+    // CAPTCHA input validation
+    captchaInput?.addEventListener('input', (e) => {
+      e.target.value = e.target.value.toUpperCase();
+    });
+
+
+    // Verification code input validation
+    verificationCode?.addEventListener('input', (e) => {
+      e.target.value = e.target.value.replace(/\D/g, '').slice(0, 6);
+    });
+
+
+    // Verify button click
+    verifyBtn?.addEventListener('click', () => {
+      if (isCountdownExpired) {
+        showError('Kode verifikasi telah kadaluarsa. Silakan kirim ulang kode baru.');
+        return;
+      }
+
+
+      const captchaValue = captchaInput.value.toUpperCase();
+      const codeValue = verificationCode.value;
+      
+      errorMessage.classList.add('hidden');
+      
+      // Validate CAPTCHA
+      if (captchaValue !== currentCaptcha) {
+        showError('CAPTCHA tidak sesuai. Silakan coba lagi.');
+        generateCaptcha();
+        captchaInput.value = '';
+        captchaInput.focus();
+        return;
+      }
+      
+      // Validate verification code
+      if (codeValue !== emailVerificationCode) {
+        showError('Kode verifikasi tidak sesuai. Periksa kembali email Anda.');
+        verificationCode.focus();
+        return;
+      }
+      
+      // Success verification
+      setVerifyLoading(true);
+      
+      setTimeout(() => {
+        setVerifyLoading(false);
+        stopCountdown();
+        hideVerificationPopup();
+        
+        // Show success message
+        countdownSection.classList.add('success-state');
+        successMessage.classList.remove('hidden');
+        successMessage.focus();
+        successMessage.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        
+        // Auto redirect after 3 seconds
+        setTimeout(() => {
+          console.log('Would redirect to evaluation step 2');
+        }, 3000);
+      }, 2000);
+    });
+
+
+    // Resend code
+    resendBtn?.addEventListener('click', async () => {
+      setResendLoading(true);
+      errorMessage.classList.add('hidden');
+      
+      try {
+        // Simulate API call (replace with actual API call)
+        await new Promise((resolve, reject) => {
+          setTimeout(() => {
+            // Simulate 80% success rate
+            if (Math.random() < 0.8) {
+              resolve();
+            } else {
+              reject(new Error('Failed to send code'));
+            }
+          }, 2000);
+        });
+        
+        // Success - generate new code and restart countdown
+        emailVerificationCode = generateEmailCode();
+        console.log('New verification code:', emailVerificationCode);
+        generateCaptcha();
+        captchaInput.value = '';
+        verificationCode.value = '';
+        startCountdown();
+        showError('Kode verifikasi baru telah dikirim ke email Anda.');
+        
+      } catch (error) {
+        // Failed - keep resend button available
+        showError('Gagal mengirim ulang kode. Silakan coba lagi dalam beberapa saat.');
+      } finally {
+        setResendLoading(false);
+      }
+    });
+
+
+    // Form submit handler
+    campusForm?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      errEmail?.classList.add('hidden');
+      emailInput?.setAttribute('aria-invalid', 'false');
+
+
+      const formData = new FormData(campusForm);
+      if (formData.get('whatsapp')) {
+        formData.set('whatsapp', normalizeWa(formData.get('whatsapp')));
+      }
+
+
+      const errors = validate(formData);
+      if (Object.keys(errors).length) {
+        if (errors.email) {
+          errEmail.textContent = errors.email;
+          errEmail.classList.remove('hidden');
+          emailInput.setAttribute('aria-invalid', 'true');
+          emailInput.focus();
+        }
+        if (errors.whatsapp) alert(errors.whatsapp);
+        if (errors.consent) alert(errors.consent);
+        return;
+      }
+
+
+      const data = Object.fromEntries(formData.entries());
+
+
+      try {
+        setLoading(true);
+        
+        // Simulate API call
+        await new Promise(r => setTimeout(r, 1500));
+        console.log('Form Data:', data);
+
+
+        setLoading(false);
+        
+        // Show verification popup
+        showVerificationPopup(data.email);
+        
+      } catch (err) {
+        console.error(err);
+        alert('Gagal mengirim data. Silakan coba lagi.');
+        setLoading(false);
+      }
+    });
+
+
+    // Close success
+    closeSuccess?.addEventListener('click', () => {
+      successMessage.classList.add('hidden');
+      submitBtn.focus();
+    });
+
+
+    // Initialize
+    identityPanel.setAttribute('aria-hidden', 'true');
+    identityPanel.style.maxHeight = '0px';
+  </script>
+</body>
+</html>
+
+
+
+
